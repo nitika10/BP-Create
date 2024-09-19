@@ -13,7 +13,7 @@ sap.ui.define(
       onInit: function () {       
         let approveDataModel = new JSONModel()
         this.getView().setModel(approveDataModel, 'approveData')
-        this._initialTempalte = {
+        this._initialTemplate = {
           Timestamp: '',
           RefNo: '',
           UserLevel: '',
@@ -47,7 +47,7 @@ sap.ui.define(
 
       },
 
-      onApproveData: function (oEvent) {
+      onApproveData: async function (oEvent) {
         let that = this
         let oButton = oEvent.getSource(); 
         let oBindingContext = oButton.getBindingContext("approveData");
@@ -56,7 +56,6 @@ sap.ui.define(
             return;
         }
         let selectedData = oBindingContext.getObject();
-
         let oPayload = {
           RefNo: selectedData.RefNo,
           Timestamp: selectedData.Timestamp,
@@ -65,103 +64,73 @@ sap.ui.define(
           Status: selectedData.Status,
           Remarks: selectedData.Remarks
         }
-        let oApproveModel = this.getView().getModel("ZNI_BPAPPROVE_SRV")
-        oApproveModel.create("/ApproverSet", oPayload, {
-          success: function(msg) {
-            MessageBox.success("Approved")
-            // oApproveModel.refresh(true);
-            that.getOwnerComponent().getRouter().navTo('Approve')
-            oButton.setEnabled(false);
-          },
-          error: function(msg) {
-            // MessageBox.error(msg, "Error")
-            let errorMsg = JSON.parse(msg.responseText).error.innererror.errordetails
-                  let returnMsg = []
-                  errorMsg.forEach((error)=>{
-                      returnMsg.push({
-                          code: error.code,
-                          message: error.message,
-                          severity: error.severity
-                      })
-                  })
-                  that
-                  ._setReturnData(errorMsg)
-                  .then(that._onResponsivePaddingDialogPress.bind(that))
-                console.log(msg)
-                console.log(errorMsg)
+        let oModel = this.getView().getModel("ZNI_BPAPPROVE_SRV")
+        let oJSONModel = this.getView().getModel("approveData")
+        let approvalState = await this._sendData(oModel, oPayload)
+        if(approvalState) {
+          let fetchData = await this._fetchData(oModel)
+          if(fetchData.state) {
+            oJSONModel.setData(fetchData.data)
+            oJSONModel.refresh(true)
           }
+        }        
+      },
+
+      _fetchData: function(oGetModel) {
+        let approveDataArr = []
+        return new Promise(function(resolve, reject) {
+          oGetModel.read('/ApproverSet', {
+            success: function (oData) {
+              console.log(oData)
+              oData.results.forEach((el) =>
+                approveDataArr.push({
+                  RefNo: el.RefNo,
+                  Timestamp: el.Timestamp,
+                  Name: el.Name,
+                  UserLevel: el.UserLevel,
+                  Status: el.Status,
+                  Remarks: el.Remarks,
+                  inProcess: el.Status === 'PEND' ? true : false
+                }),
+              )
+              resolve({ state:true, data: approveDataArr})
+            },
+            error: function (err) {
+              MessageBox.error(err)
+              reject({ state:false, data: []})
+            },
+          })
         })
+      },
 
-
-        // var oButton = oEvent.getSource()
-        // var oContext = oButton.getBindingContext('approveData')
-
-        // if (oContext) {
-        //   var oData = oContext.getObject()
-
-        //   var sStatus = oData.Status
-        //   var sRemarks = oData.Remarks
-
-        //   var oTableRow = oButton.getParent() 
-
-          
-        //   var oStatusInput = oTableRow.getCells()[4] 
-        //   oStatusInput.setEnabled(false) 
-
-          
-        //   var oRemarksInput = oTableRow.getCells()[5] 
-        //   oRemarksInput.setEnabled(false) 
-
-        //   oButton.setEnabled(false);
-
-        //   // You can now handle the data as per your requirement
-        //   console.log('Reference No: ' + oData.RefNo)
-        //   console.log('Timestamp: ' + oData.Timestamp)
-        //   console.log('User Level: ' + oData.UserLevel)
-        //   console.log('Name: ' + oData.Name)
-        //   console.log('Status: ' + sStatus)
-        //   console.log('Remarks: ' + sRemarks)
-
-        //   // Further processing, like sending the data to a backend, can be done here
-        // } else {
-        //   console.error('No binding context found for the selected row.')
-        // }
-
-        // let oPayload = {
-        //   RefNo:  oData.RefNo,
-        //   Timestamp: oData.Timestamp,
-        //   UserLevel: oData.UserLevel,
-        //   Name: oData.Name,
-        //   Status: oData.Status,
-        //   Remarks: oData.Remarks
-        // }
-        // let oApproveModel = this.getView().getModel("ZNI_BPAPPROVE_SRV")
-        // let that = this
-        // oApproveModel.create("/ApproverSet", oPayload, {
-        //   success: function(msg) {
-        //     MessageBox.success("Approved")
-        //     oApproveModel.refresh(true);
-        //   },
-        //   error: function(msg) {
-        //     // MessageBox.error(msg, "Error")
-        //     let errorMsg = JSON.parse(msg.responseText).error.innererror.errordetails
-        //           let returnMsg = []
-        //           errorMsg.forEach((error)=>{
-        //               returnMsg.push({
-        //                   code: error.code,
-        //                   message: error.message,
-        //                   severity: error.severity
-        //               })
-        //           })
-        //           that
-        //           ._setReturnData(errorMsg)
-        //           .then(that._onResponsivePaddingDialogPress.bind(that))
-        //         console.log(msg)
-        //         console.log(errorMsg)
-        //   }
-        // })
-
-
+      _sendData: function(oApproveModel, oPayload) {
+        let that = this;
+        return new Promise((resolve, reject) => {
+          oApproveModel.create("/ApproverSet", oPayload, {
+            success: function(msg) {
+              MessageBox.success("Approved")
+            resolve(true)
+            },
+            error: function(msg) {
+              // MessageBox.error(msg, "Error")
+              let errorMsg = JSON.parse(msg.responseText).error.innererror.errordetails
+                    let returnMsg = []
+                    errorMsg.forEach((error)=>{
+                        returnMsg.push({
+                            code: error.code,
+                            message: error.message,
+                            severity: error.severity
+                        })
+                    })
+                    that
+                    ._setReturnData(errorMsg)
+                    .then(that._onResponsivePaddingDialogPress.bind(that))
+                  console.log(msg)
+                  console.log(errorMsg)
+                  reject(false)
+            }
+          })
+        })
       },
 
       _onResponsivePaddingDialogPress: function () {
