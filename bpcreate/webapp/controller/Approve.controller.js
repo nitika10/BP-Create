@@ -35,6 +35,7 @@ sap.ui.define(
                 UserLevel: el.UserLevel,
                 Status: el.Status,
                 Remarks: el.Remarks,
+                inProcess: el.Status === 'PEND' ? true : false
               }),
             )
             approveDataModel.setData(approveDataArr)
@@ -68,8 +69,9 @@ sap.ui.define(
         oApproveModel.create("/ApproverSet", oPayload, {
           success: function(msg) {
             MessageBox.success("Approved")
-            oApproveModel.refresh(true);
+            // oApproveModel.refresh(true);
             that.getOwnerComponent().getRouter().navTo('Approve')
+            oButton.setEnabled(false);
           },
           error: function(msg) {
             // MessageBox.error(msg, "Error")

@@ -57,20 +57,20 @@
 						<ui:Column width="auto">
                             <Label text="Status"/>
 							<ui:template>
-                                <Input id="status" value="{approveData>Status}" showValueHelp="true" valueHelpRequest="onStatus"  />
+                                <Input id="status" value="{approveData>Status}" showValueHelp="true" valueHelpRequest="onStatus" enabled="{approveData>inProcess}" />
 							</ui:template>
 						</ui:Column>
 						<ui:Column width="20rem">
                             <Label text="Remarks"/>
 							<ui:template>
-                                <Input id="remarks" value="{approveData>Remarks}"/>
+                                <Input id="remarks" value="{approveData>Remarks}" enabled="{approveData>inProcess}"/>
 							</ui:template>
 						</ui:Column>
 						<ui:Column width="auto">
                             <Label text="Save"/>
 							<ui:template>
-								<Button text="Save" id="approveButton" press="onApproveData" tooltip="Approve Data" />
-								<!-- enabled="{= ${approveData>Status} === 'PEND' ? true : false }" -->
+								<Button text="Save" id="approveButton" press="onApproveData" enabled="{approveData>inProcess}" tooltip="Approve Data" />
+								<!-- enabled="{= !${approveData>isCompleted} }" -->
 							</ui:template>
 						</ui:Column>
 					</ui:columns>
