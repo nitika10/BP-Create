@@ -1,0 +1,46 @@
+specVersion: "2.6"
+metadata:
+  name: com.bp.bpcreate
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+        backend:
+          - path: /sap/opu/odata/sap/ZNI_BPAPPROVE_SRV
+            url: http://172.174.242.213:8003
+            client: "150"
+          - path: /sap/opu/odata/sap/ZNI_BPCREATE_SRV/
+            url: http://172.174.242.213:8003
+            client: "150"
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /sap/opu/odata/sap/ZNI_BPCREATE_SRV
+            generateMockData: true
+            metadataXmlPath: ./webapp/localService/mainService/metadata.xml
+            mockdataRootPath: ./webapp/localService/data
+          - urlPath: /sap/opu/odata/sap/ZNI_BPAPPROVE_SRV
+            generateMockData: true
+            metadataXmlPath: ./webapp/localService/ZNI_BPAPPROVE_SRV/metadata.xml
+            mockdataRootPath: ./webapp/localService/ZNI_BPAPPROVE_SRV/mockdata
+          - urlPath: /sap/opu/odata/sap/ZNI_BPCREATE_SRV/
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/mockdata
+            generateMockData: true
+        annotations: []

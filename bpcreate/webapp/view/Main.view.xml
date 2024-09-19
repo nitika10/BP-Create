@@ -1,0 +1,192 @@
+<mvc:View controllerName="com.bp.bpcreate.controller.Main"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m" xmlns:ui="sap.ui.table" xmlns:u="sap.ui.unified">
+    <Page id="page" title="{i18n>title}">
+        <content>
+            <ui:Table rows="{BPData>/items}" id="excelTable" selectionMode="None" ariaLabelledBy="title" visibleRowCount="4">
+				<ui:extension>
+					<OverflowToolbar style="Clear">
+						<Title id="title" text="BP Creation"/>
+							<ToolbarSpacer/>
+                            <u:FileUploader id="excelUploader" name="excelUpload" uploadUrl="upload/" tooltip="Upload the Excel File here" 
+                            uploadComplete="handleUploadComplete" change="onDataAdd"/>
+							<Button text="Upload Template" press="onUploadTemplate" tooltip="Upload Template" />
+							<Button text="Approve" press="onApprove"/>      
+					</OverflowToolbar>
+				</ui:extension>
+				<ui:columns>
+					<ui:Column width="9rem">
+						<Label text="Customer No. (Ref. No.)"/>
+                           <ui:template>
+							<Text text="{BPData>Referencenumber}"/>
+								<!-- <Input id="Referencenumber" value="{BpData>Referencenumber}"/> -->
+								</ui:template>
+							</ui:Column>
+							<ui:Column width="9rem">
+								<Label text="Customer Account Group"/>
+								<ui:template>
+							   <Text text="{BPData>CustAcctGroup}"/>
+                               <!-- <Input id="Custacctgroup" value="{BPData>CustAcctGroup}"/> -->
+                           </ui:template>
+					</ui:Column>
+					<ui:Column width="7rem">
+                           <Label text="PAN Number"/>
+						<ui:template>
+                            <Text text="{BPData>PANNO}"/>
+						</ui:template>
+					</ui:Column>
+					<ui:Column width="7rem">
+                        <Label text="Title"/>
+						<ui:template>
+                            <Text text="{BPData>Title}"/>
+                        </ui:template>
+					</ui:Column>
+					<ui:Column width="7rem">
+                        <Label text="Name"/>
+						<ui:template>
+                            <Text text="{BPData>Name}"/>
+						</ui:template>
+					</ui:Column>
+					<ui:Column width="7rem">
+                        <Label text="Street"/>
+						<ui:template>
+                            <Text text="{BPData>Street}"/>
+						</ui:template>
+					</ui:Column>
+					<ui:Column width="7rem">
+                        <Label text="City"/>
+						<ui:template>
+                            <Text text="{BPData>City}"/>
+						</ui:template>
+					</ui:Column>
+					<ui:Column width="7rem">
+                        <Label text="District"/>
+						<ui:template>
+                            <Text text="{BPData>District}"/>
+						</ui:template>
+					</ui:Column>
+					<ui:Column width="7rem">
+                        <Label text="State"/>
+						<ui:template>
+                            <Text text="{BPData>State}"/>
+						</ui:template>
+					</ui:Column>
+					<ui:Column width="7rem">
+                        <Label text="Postal Code"/>
+						<ui:template>
+                            <Text text="{BPData>PostalCode}"/>
+						</ui:template>
+					</ui:Column>
+					<ui:Column width="7rem">
+                        <Label text="Country"/>
+						<ui:template>
+                            <Text text="{BPData>Country}"/>
+						</ui:template>
+					</ui:Column>
+					<ui:Column width="7rem">
+                        <Label text="Language"/>
+						<ui:template>
+                            <Text text="{BPData>Language}"/>
+						</ui:template>
+					</ui:Column>
+					<ui:Column width="7rem">
+                        <Label text="Search Term"/>
+						<ui:template>
+                            <Text text="{BPData>SearchTerm1}"/>
+						</ui:template>
+					</ui:Column>
+                    <ui:Column width="7rem">
+                        <Label text="Company Code"/>
+                        <ui:template>
+                            <Text text="{BPData>CompanyCode}"/>
+                        </ui:template>
+                    </ui:Column>
+					<ui:Column width="7rem">
+                        <Label text="Reconciliation Account"/>
+						<ui:template>
+                            <Text text="{BPData>ReconcAcct}"/>
+						</ui:template>
+					</ui:Column>
+					<ui:Column width="7rem">
+                        <Label text="Sales Organization"/>
+						<ui:template>
+                            <Text text="{BPData>SalesOrg}"/>
+						</ui:template>
+					</ui:Column>
+					<ui:Column width="7rem">
+                        <Label text="Distribution Channel"/>
+						<ui:template>
+                            <Text text="{BPData>DistChannel}"/>
+						</ui:template>
+					</ui:Column>
+					<ui:Column width="7rem">
+                        <Label text="Division"/>
+						<ui:template>
+                            <Text text="{BPData>Division}"/>
+						</ui:template>
+					</ui:Column>
+					<ui:Column width="7rem">
+                        <Label text="Currency"/>
+						<ui:template>
+                            <Text text="{BPData>Currency}"/>
+						</ui:template>
+					</ui:Column>
+					<ui:Column width="7rem">
+                        <Label text="Pricing Procedure"/>
+						<ui:template>
+                            <Text text="{BPData>PricingProc}"/>
+						</ui:template>
+					</ui:Column>
+					<ui:Column width="7rem">
+                        <Label text="Shipping Condition"/>
+						<ui:template>
+                            <Text text="{BPData>ShipCond}"/>
+						</ui:template>
+					</ui:Column>
+					<ui:Column width="7rem">
+                        <Label text="Customer Group"/>
+						<ui:template>
+                            <Text text="{BPData>CustGroup}"/>
+						</ui:template>
+					</ui:Column>
+					<ui:Column width="7rem">
+                        <Label text="Sales District"/>
+						<ui:template>
+                            <Text id="SalesDistrict" text="{BPData>SalesDistrict}"/>
+						</ui:template>
+					</ui:Column>
+					<ui:Column width="7rem">
+                        <Label text="Sales Office"/>
+						<ui:template>
+                            <Text text="{BPData>SalesOffice}"/>
+						</ui:template>
+					</ui:Column>
+					<ui:Column width="7rem">
+                        <Label text="Price Group"/>
+						<ui:template>
+                            <Text text="{BPData>PriceGroup}"/>
+						</ui:template>
+					</ui:Column>
+					<ui:Column width="7rem">
+                        <Label text="IncoTerms"/>
+						<ui:template>
+                            <Text text="{BPData>IncoTerms}"/>
+						</ui:template>
+					</ui:Column>
+					<ui:Column width="7rem">
+                        <Label text=" Incoterms Location"/>
+						<ui:template>
+                            <Text text="{BPData>IncoTermsLoc}"/>
+						</ui:template>
+					</ui:Column>
+					<ui:Column width="7rem">
+                        <Label text="Payment Terms"/>
+						<ui:template>
+                            <Text text="{BPData>PaymentTerms}"/>
+						</ui:template>
+					</ui:Column>
+				</ui:columns>
+            </ui:Table>
+        </content>
+    </Page>
+</mvc:View>
