@@ -2,17 +2,18 @@
     xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
     xmlns="sap.m" xmlns:ui="sap.ui.table" xmlns:c="sap.ui.core">
     <Page id="page" title="{i18n>title}">
-        <content>
-            <ui:Table 
+		<content>
+			<Button text="PDF Download" id="pdfButton" press="onPdfDownload" tooltip="PDF Download" />
+			<ui:Table 
 			rows="{approveData>/}"
 			id="approveTable"
-			selectionMode="None"
+			selectionMode="MultiToggle"
 			ariaLabelledBy="title" visibleRowCount="17">
-			<!-- <ui:extension>
+			<ui:extension>
 				<OverflowToolbar style="Clear">
-					<Title id="title" text="Products"/>
+					<Title id="title" text="Approve"/>
 					<ToolbarSpacer/>
-					<Label text="Reference No" labelFor="ref_no"/>
+					<!-- <Label text="Reference No" labelFor="ref_no"/>
 					<Select
 						id="ref_noid"
 						width="20%"
@@ -25,45 +26,45 @@
 						width="20%"
 						items="{ZNI_BPAPPROVE_SRV>/StatusVHSet}">
 						<c:Item id="status_rec" text="{ZNI_BPAPPROVE_SRV>Status}"/>
-					</Select>
+					</Select> -->
 				</OverflowToolbar>
-			</ui:extension> -->
+			</ui:extension>
 					<ui:columns>
 						<ui:Column width="10rem">
 							<Label text="Reference No"/>
                             <ui:template>
-                                <Text text="{approveData>RefNo}"/>
+                                <Text id="idRefNo" text="{approveData>RefNo}"/>
                             </ui:template>
 						</ui:Column>
 						<ui:Column width="15rem">
                             <Label text="Timestamp"/>
 							<ui:template>
-								<DateTimePicker value="{path: 'approveData>Timestamp',type: 'sap.ui.model.type.DateTime'}" />
+								<DateTimePicker id="idTimestamp" value="{path: 'approveData>Timestamp',type: 'sap.ui.model.type.DateTime'}" editable="false"/>
 							</ui:template>
 						</ui:Column>
 						<ui:Column width="10rem">
                             <Label text="Level"/>
 							<ui:template>
-                                <Text text="{approveData>UserLevel}"/>
+                                <Text id="idUserLevel" text="{approveData>UserLevel}"/>
 								</ui:template>
 							</ui:Column>
 							<ui:Column width="auto">
 								<Label text="Name"/>
 								<ui:template>
-									<Text text="{approveData>Name}"/>
+									<Text id="idName" text="{approveData>Name}"/>
                                 <!-- <Input id="name" value="{approveData>Name}"/> -->
 							</ui:template>
 						</ui:Column>
 						<ui:Column width="auto">
                             <Label text="Status"/>
 							<ui:template>
-                                <Input id="status" value="{approveData>Status}" showValueHelp="true" valueHelpRequest="onStatus" enabled="{approveData>inProcess}" />
+                                <Input id="idStatus" value="{approveData>Status}" showValueHelp="true" valueHelpRequest="onStatus" enabled="{approveData>inProcess}" />
 							</ui:template>
 						</ui:Column>
 						<ui:Column width="20rem">
                             <Label text="Remarks"/>
 							<ui:template>
-                                <Input id="remarks" value="{approveData>Remarks}" enabled="{approveData>inProcess}"/>
+                                <Input id="idRemarks" value="{approveData>Remarks}" enabled="{approveData>inProcess}"/>
 							</ui:template>
 						</ui:Column>
 						<ui:Column width="auto">

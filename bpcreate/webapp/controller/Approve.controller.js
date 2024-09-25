@@ -3,14 +3,18 @@ sap.ui.define(
     'sap/ui/core/mvc/Controller',
     'sap/ui/model/json/JSONModel',
     'sap/m/MessageBox',
+    "sap/m/MessageToast"
   ],
   /**
    * @param {typeof sap.ui.core.mvc.Controller} Controller
    */
-  function (Controller, JSONModel, MessageBox) {
+  function (Controller,
+	JSONModel,
+	MessageBox,
+	MessageToast) {
     'use strict'
     return Controller.extend('com.bp.bpcreate.controller.Approve', {
-      onInit: function () {       
+      onInit: function () {
         let approveDataModel = new JSONModel()
         this.getView().setModel(approveDataModel, 'approveData')
         this._initialTemplate = {
@@ -35,7 +39,7 @@ sap.ui.define(
                 UserLevel: el.UserLevel,
                 Status: el.Status,
                 Remarks: el.Remarks,
-                inProcess: el.Status === 'PEND' ? true : false
+                inProcess: el.Status === 'PEND' ? true : false,
               }),
             )
             approveDataModel.setData(approveDataArr)
@@ -44,41 +48,40 @@ sap.ui.define(
             MessageBox.error(err)
           },
         })
-
       },
 
       onApproveData: async function (oEvent) {
         let that = this
-        let oButton = oEvent.getSource(); 
-        let oBindingContext = oButton.getBindingContext("approveData");
+        let oButton = oEvent.getSource()
+        let oBindingContext = oButton.getBindingContext('approveData')
         if (!oBindingContext) {
-            console.error("No binding context found for the selected row.");
-            return;
+          console.error('No binding context found for the selected row.')
+          return
         }
-        let selectedData = oBindingContext.getObject();
+        let selectedData = oBindingContext.getObject()
         let oPayload = {
           RefNo: selectedData.RefNo,
           Timestamp: selectedData.Timestamp,
           UserLevel: selectedData.UserLevel,
           Name: selectedData.Name,
           Status: selectedData.Status,
-          Remarks: selectedData.Remarks
+          Remarks: selectedData.Remarks,
         }
-        let oModel = this.getView().getModel("ZNI_BPAPPROVE_SRV")
-        let oJSONModel = this.getView().getModel("approveData")
+        let oModel = this.getView().getModel('ZNI_BPAPPROVE_SRV')
+        let oJSONModel = this.getView().getModel('approveData')
         let approvalState = await this._sendData(oModel, oPayload)
-        if(approvalState) {
+        if (approvalState) {
           let fetchData = await this._fetchData(oModel)
-          if(fetchData.state) {
+          if (fetchData.state) {
             oJSONModel.setData(fetchData.data)
             oJSONModel.refresh(true)
           }
-        }        
+        }
       },
 
-      _fetchData: function(oGetModel) {
+      _fetchData: function (oGetModel) {
         let approveDataArr = []
-        return new Promise(function(resolve, reject) {
+        return new Promise(function (resolve, reject) {
           oGetModel.read('/ApproverSet', {
             success: function (oData) {
               console.log(oData)
@@ -90,45 +93,52 @@ sap.ui.define(
                   UserLevel: el.UserLevel,
                   Status: el.Status,
                   Remarks: el.Remarks,
-                  inProcess: el.Status === 'PEND' ? true : false
+                  inProcess: el.Status === 'PEND' ? true : false,
                 }),
               )
-              resolve({ state:true, data: approveDataArr})
+              resolve({
+                state: true,
+                data: approveDataArr,
+              })
             },
             error: function (err) {
               MessageBox.error(err)
-              reject({ state:false, data: []})
+              reject({
+                state: false,
+                data: [],
+              })
             },
           })
         })
       },
 
-      _sendData: function(oApproveModel, oPayload) {
-        let that = this;
+      _sendData: function (oApproveModel, oPayload) {
+        let that = this
         return new Promise((resolve, reject) => {
-          oApproveModel.create("/ApproverSet", oPayload, {
-            success: function(msg) {
-              MessageBox.success("Approved")
-            resolve(true)
+          oApproveModel.create('/ApproverSet', oPayload, {
+            success: function (msg) {
+              MessageBox.success('Approved')
+              resolve(true)
             },
-            error: function(msg) {
+            error: function (msg) {
               // MessageBox.error(msg, "Error")
-              let errorMsg = JSON.parse(msg.responseText).error.innererror.errordetails
-                    let returnMsg = []
-                    errorMsg.forEach((error)=>{
-                        returnMsg.push({
-                            code: error.code,
-                            message: error.message,
-                            severity: error.severity
-                        })
-                    })
-                    that
-                    ._setReturnData(errorMsg)
-                    .then(that._onResponsivePaddingDialogPress.bind(that))
-                  console.log(msg)
-                  console.log(errorMsg)
-                  reject(false)
-            }
+              let errorMsg = JSON.parse(msg.responseText).error.innererror
+                .errordetails
+              let returnMsg = []
+              errorMsg.forEach((error) => {
+                returnMsg.push({
+                  code: error.code,
+                  message: error.message,
+                  severity: error.severity,
+                })
+              })
+              that
+                ._setReturnData(errorMsg)
+                .then(that._onResponsivePaddingDialogPress.bind(that))
+              console.log(msg)
+              console.log(errorMsg)
+              reject(false)
+            },
           })
         })
       },
@@ -240,26 +250,38 @@ sap.ui.define(
           path: '/StatusVHSet',
           template: new sap.m.ColumnListItem({
             cells: [
-              new sap.m.Text({ text: '{Status}' }),
-              new sap.m.Text({ text: '{StatusDesc}' }),
+              new sap.m.Text({
+                text: '{Status}',
+              }),
+              new sap.m.Text({
+                text: '{StatusDesc}',
+              }),
             ],
           }),
         })
         oTable.addColumn(
           new sap.m.Column({
-            header: new sap.m.Label({ text: 'Status' }),
+            header: new sap.m.Label({
+              text: 'Status',
+            }),
           }),
         )
         oTable.addColumn(
           new sap.m.Column({
-            header: new sap.m.Label({ text: 'Status Description' }),
+            header: new sap.m.Label({
+              text: 'Status Description',
+            }),
           }),
         )
         oTable.addItem(
           new sap.m.ColumnListItem({
             cells: [
-              new sap.m.Text({ text: '{Status}' }),
-              new sap.m.Text({ text: '{StatusDesc}' }),
+              new sap.m.Text({
+                text: '{Status}',
+              }),
+              new sap.m.Text({
+                text: '{StatusDesc}',
+              }),
             ],
           }),
         )
@@ -280,6 +302,92 @@ sap.ui.define(
         )
         this._oValueHelpDialog.close()
       },
+
+      onPdfDownload: function () {
+        // Get the selected rows from the table
+        let oTable = this.byId("approveTable");
+        let aSelectedIndices = oTable.getSelectedIndices();
+        let oModel = this.getView().getModel("approveData");
+        let aSelectedData = [];
+    
+        // Gather data for the selected rows
+        aSelectedIndices.forEach(function (index) {
+            let oContext = oTable.getContextByIndex(index);
+            if (oContext) {
+                aSelectedData.push(oContext.getObject());
+            }
+        });
+    
+        if (aSelectedData.length === 0) {
+            sap.m.MessageBox.warning("Please select at least one row to download the PDF.");
+            return;
+        }
+    
+        // Import jsPDF
+        const { jsPDF } = window.jspdf;
+    
+        aSelectedData.forEach(function (item) {
+            const doc = new jsPDF();
+    
+            // 1. Add Header Section with Title and Styling
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(18);
+            doc.setTextColor(44, 62, 80); // Dark blue
+            doc.text("Approval Data", 105, 20, null, null, "center");
+    
+            doc.setFontSize(12);
+            doc.setDrawColor(44, 62, 80); // Blue line
+            doc.line(10, 30, 200, 30); // Horizontal line separator
+    
+            let yOffset = 40; // Initial Y offset
+    
+            // 2. Set Label and Value Alignment and Formatting
+            const labelX = 10;  // X position for labels
+            const valueX = 60;  // X position for values
+            const lineSpacing = 10; // Space between lines
+            const boxPadding = 5; // Padding for boxes
+    
+            const fields = [
+                { label: "Reference No.", value: item.RefNo },
+                { label: "Timestamp", value: new Date(item.Timestamp).toLocaleString() },
+                { label: "User Level", value: item.UserLevel },
+                { label: "Name", value: item.Name },
+                { label: "Status", value: item.Status },
+                { label: "Remarks", value: item.Remarks },
+            ];
+    
+            // 3. Draw a Box Around the Details Section for a Cleaner Look
+            doc.setDrawColor(100, 100, 100); // Gray border
+            doc.roundedRect(5, yOffset - 5, 200, fields.length * lineSpacing + boxPadding, 3, 3); // Rounded corner box
+    
+            // 4. Add Fields with Labels and Values
+            fields.forEach((field) => {
+                doc.setFont("helvetica", "bold");
+                doc.setTextColor(52, 73, 94); // Dark gray
+                doc.text(field.label + ":", labelX, yOffset); // Label
+    
+                doc.setFont("helvetica", "normal");
+                doc.setTextColor(39, 174, 96); // Green for values
+                doc.text(field.value || "N/A", valueX, yOffset); // Value
+    
+                yOffset += lineSpacing;
+            });
+    
+            // 5. Add Footer with Timestamp and Page Number
+            yOffset += 20; // Extra space before footer
+            doc.setFontSize(10);
+            doc.setTextColor(128, 139, 150); // Light gray
+            doc.text("Generated on: " + new Date().toLocaleString(), 10, 280); // Generation timestamp
+            doc.text("Page 1", 200, 280, null, null, "right"); // Page number
+    
+            // 6. Save the PDF with a Descriptive Filename
+            let fileName = `ApprovalData_${item.RefNo}.pdf`;
+            doc.save(fileName);
+        });
+    
+        sap.m.MessageToast.show("PDF files have been downloaded.");
+    }
+    
     })
   },
 )
