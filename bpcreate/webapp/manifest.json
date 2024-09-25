@@ -106,6 +106,9 @@
             "js": [
                 {
                     "uri": "libs/xlsx.full.min.js"
+                },
+                {
+                    "uri": "libs/jspdf.umd.min.js"
                 }
             ]
         },
