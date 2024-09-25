@@ -304,7 +304,6 @@ sap.ui.define(
       },
 
       onPdfDownload: function () {
-        // Get the selected rows from the table
         let oTable = this.byId("approveTable");
         let aSelectedIndices = oTable.getSelectedIndices();
         let oModel = this.getView().getModel("approveData");
@@ -323,64 +322,88 @@ sap.ui.define(
             return;
         }
     
-        // Import jsPDF
-        const { jsPDF } = window.jspdf;
+        let { jsPDF } = window.jspdf;
     
         aSelectedData.forEach(function (item) {
-            const doc = new jsPDF();
+            let doc = new jsPDF();
     
-            // 1. Add Header Section with Title and Styling
+            // Add Header Section with Title and Styling
             doc.setFont("helvetica", "bold");
             doc.setFontSize(18);
             doc.setTextColor(44, 62, 80); // Dark blue
             doc.text("Approval Data", 105, 20, null, null, "center");
     
             doc.setFontSize(12);
-            doc.setDrawColor(44, 62, 80); // Blue line
-            doc.line(10, 30, 200, 30); // Horizontal line separator
+            doc.setDrawColor(44, 62, 80);
+            doc.line(10, 30, 200, 30);
     
-            let yOffset = 40; // Initial Y offset
+            let labelX = 10;
+            let valueX = 60;
+            let lineSpacing = 10;
+            let boxPadding = 5;
     
-            // 2. Set Label and Value Alignment and Formatting
-            const labelX = 10;  // X position for labels
-            const valueX = 60;  // X position for values
-            const lineSpacing = 10; // Space between lines
-            const boxPadding = 5; // Padding for boxes
+            let yOffset = 40;
     
-            const fields = [
-                { label: "Reference No.", value: item.RefNo },
+            doc.setDrawColor(100, 100, 100);
+            doc.roundedRect(5, yOffset, 200, 3 * lineSpacing + boxPadding, 3, 3);
+    
+            // Add Reference No
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(52, 73, 94);
+            doc.text("Reference No:", labelX, yOffset + 10);
+    
+            doc.setFont("helvetica", "normal");
+            doc.setTextColor(39, 174, 96);
+            doc.text(item.RefNo || "N/A", valueX, yOffset + 10);
+    
+            // Add Name
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(52, 73, 94);
+            doc.text("Name:", labelX, yOffset + 20);
+    
+            doc.setFont("helvetica", "normal");
+            doc.setTextColor(39, 174, 96);
+            doc.text(item.Name || "N/A", valueX, yOffset + 20);
+    
+            // Add Company Code
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(52, 73, 94);
+            doc.text("Company Code:", labelX, yOffset + 30);
+    
+            doc.setFont("helvetica", "normal");
+            doc.setTextColor(39, 174, 96);
+            doc.text(item.CompanyCode || "N/A", valueX, yOffset + 30);
+    
+            yOffset += 50;
+    
+            let fields = [
                 { label: "Timestamp", value: new Date(item.Timestamp).toLocaleString() },
                 { label: "User Level", value: item.UserLevel },
-                { label: "Name", value: item.Name },
                 { label: "Status", value: item.Status },
                 { label: "Remarks", value: item.Remarks },
             ];
     
-            // 3. Draw a Box Around the Details Section for a Cleaner Look
-            doc.setDrawColor(100, 100, 100); // Gray border
-            doc.roundedRect(5, yOffset - 5, 200, fields.length * lineSpacing + boxPadding, 3, 3); // Rounded corner box
+            doc.setDrawColor(100, 100, 100);
+            doc.roundedRect(5, yOffset, 200, fields.length * lineSpacing + boxPadding, 3, 3);
     
-            // 4. Add Fields with Labels and Values
             fields.forEach((field) => {
                 doc.setFont("helvetica", "bold");
-                doc.setTextColor(52, 73, 94); // Dark gray
-                doc.text(field.label + ":", labelX, yOffset); // Label
+                doc.setTextColor(52, 73, 94);
+                doc.text(field.label + ":", labelX, yOffset + 10);
     
                 doc.setFont("helvetica", "normal");
-                doc.setTextColor(39, 174, 96); // Green for values
-                doc.text(field.value || "N/A", valueX, yOffset); // Value
+                doc.setTextColor(39, 174, 96);
+                doc.text(field.value || "N/A", valueX, yOffset + 10);
     
                 yOffset += lineSpacing;
             });
     
-            // 5. Add Footer with Timestamp and Page Number
-            yOffset += 20; // Extra space before footer
+            yOffset += 20;
             doc.setFontSize(10);
-            doc.setTextColor(128, 139, 150); // Light gray
-            doc.text("Generated on: " + new Date().toLocaleString(), 10, 280); // Generation timestamp
-            doc.text("Page 1", 200, 280, null, null, "right"); // Page number
+            doc.setTextColor(128, 139, 150);
+            doc.text("Generated on: " + new Date().toLocaleString(), 10, 280);
+            doc.text("Page 1", 200, 280, null, null, "right");
     
-            // 6. Save the PDF with a Descriptive Filename
             let fileName = `ApprovalData_${item.RefNo}.pdf`;
             doc.save(fileName);
         });
