@@ -11,8 +11,9 @@ sap.ui.define([
 
         return Controller.extend("com.bp.bpcreate.controller.Main", {
             onInit: function () {
-                let bpDataModel = new JSONModel()
-                this.getView().setModel(bpDataModel, "BPData");
+                let bpAddDataModel = new JSONModel()
+                // this.getView().setModel(bpAddDataModel, "BPData");
+                this.getOwnerComponent().setModel(bpAddDataModel, "BPData"); // Store at component level
                 this._initialTemplate = {
                     Msg: '',
                     ToMultiCustDataNav: [

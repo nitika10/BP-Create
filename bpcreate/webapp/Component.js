@@ -7,8 +7,13 @@ sap.ui.define([
         "sap/ui/Device",
         "com/bp/bpcreate/model/models",
         'sap/ui/core/routing/HashChanger',
+        "sap/ui/model/json/JSONModel"
     ],
-    function (UIComponent, Device, models, HashChanger) {
+    function (UIComponent,
+	Device,
+	models,
+	HashChanger,
+	JSONModel) {
         "use strict";
 
         return UIComponent.extend("com.bp.bpcreate.Component", {
@@ -31,7 +36,12 @@ sap.ui.define([
 
                 // set the device model
                 this.setModel(models.createDeviceModel(), "device");
-            }
+
+                // let bpDataModel = new JSONModel()
+                // this.setModel(bpDataModel, "BPData");
+
+            },
+
         });
     }
 );
