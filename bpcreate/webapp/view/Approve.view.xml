@@ -8,7 +8,7 @@
 			rows="{approveData>/}"
 			id="approveTable"
 			selectionMode="MultiToggle"
-			ariaLabelledBy="title" visibleRowCount="17">
+			ariaLabelledBy="title" visibleRowCount="15">
 			<ui:extension>
 				<OverflowToolbar style="Clear">
 					<Title id="title" text="Approve"/>
