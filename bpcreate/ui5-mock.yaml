@@ -36,11 +36,11 @@ server:
             metadataXmlPath: ./webapp/localService/mainService/metadata.xml
             mockdataRootPath: ./webapp/localService/data
           - urlPath: /sap/opu/odata/sap/ZNI_BPAPPROVE_SRV
+            metadataPath: ./webapp/localService/ZNI_BPAPPROVE_SRV/metadata.xml
+            mockdataPath: ./webapp/localService/ZNI_BPAPPROVE_SRV/mockdata
             generateMockData: true
-            metadataXmlPath: ./webapp/localService/ZNI_BPAPPROVE_SRV/metadata.xml
-            mockdataRootPath: ./webapp/localService/ZNI_BPAPPROVE_SRV/mockdata
           - urlPath: /sap/opu/odata/sap/ZNI_BPCREATE_SRV/
-            metadataPath: ./webapp/localService/mainService/metadata.xml
-            mockdataPath: ./webapp/localService/mainService/mockdata
             generateMockData: true
+            metadataXmlPath: ./webapp/localService/mainService/metadata.xml
+            mockdataRootPath: ./webapp/localService/mainService/mockdata
         annotations: []
