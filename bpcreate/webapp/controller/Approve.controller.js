@@ -348,7 +348,7 @@ sap.ui.define(
             let pageHeight = 280; // Page height minus margins
     
             // Helper function to draw rounded box for each block
-            const drawBox = (doc, yStart, height, title) => {
+            let drawBox = (doc, yStart, height, title) => {
                 doc.setDrawColor(100, 100, 100); // Gray border
                 doc.roundedRect(10, yStart - 10, 190, height + boxExtraHeight, 5, 5); // Increased height for the box
                 doc.setFont('helvetica', 'bold');
@@ -356,7 +356,7 @@ sap.ui.define(
             };
     
             // Add Header Section with Title and Styling
-            const addHeader = (doc) => {
+            let addHeader = (doc) => {
                 doc.setFont('helvetica', 'bold');
                 doc.setFontSize(18);
                 doc.setTextColor(44, 62, 80); // Dark blue
@@ -367,7 +367,7 @@ sap.ui.define(
             };
     
             // Add Footer with Timestamp and Page Number
-            const addFooter = (doc, pageNum) => {
+            let addFooter = (doc, pageNum) => {
                 doc.setFontSize(10);
                 doc.setTextColor(128, 139, 150); // Light gray
                 doc.text('Generated on: ' + new Date().toLocaleString(), 10, pageHeight); // Generation timestamp
@@ -375,7 +375,7 @@ sap.ui.define(
             };
     
             // Function to check if space is left on the current page and add a new page if required
-            const checkPageOverflow = (currentY, doc) => {
+            let checkPageOverflow = (currentY, doc) => {
                 if (currentY + 30 > pageHeight) { // Buffer for footer
                     addFooter(doc, doc.internal.getNumberOfPages());
                     doc.addPage();
@@ -389,7 +389,7 @@ sap.ui.define(
             addHeader(doc);
 
 
-            const addSection = (title, fields) => {
+            let addSection = (title, fields) => {
               let sectionHeight = (fields.length * lineSpacing) + 2 * boxPadding; // Adjust box height dynamically
               drawBox(doc, yOffset, sectionHeight, title);
               yOffset += 8; // Decrease the space after the title to avoid overlap
